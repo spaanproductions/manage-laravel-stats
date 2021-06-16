@@ -44,7 +44,6 @@ return (new PhpCsFixer\Config())
         'combine_consecutive_issets'         => true,
         'combine_consecutive_unsets'         => true,
         'no_short_bool_cast'                 => true,
-        'no_short_echo_tag'                  => true,
         'not_operator_with_space'            => true,
         'object_operator_without_whitespace' => true,
     ])
