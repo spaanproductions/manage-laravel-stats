@@ -17,9 +17,9 @@ class ManageLaravelStatsServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('manage-laravel-stats')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_manage-laravel-stats_table')
+            ->hasConfigFile('manage-stats')
+            // ->hasViews()
+            // ->hasMigration('create_manage-laravel-stats_table')
             ->hasCommand(ManageLaravelStatsCommand::class);
     }
 }
