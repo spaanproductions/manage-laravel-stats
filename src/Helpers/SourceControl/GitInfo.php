@@ -34,8 +34,8 @@ class GitInfo
      */
     public function __construct(string $branch, CommitInfo $head, array $remotes)
     {
-        $this->branch  = $branch;
-        $this->head    = $head;
+        $this->branch = $branch;
+        $this->head = $head;
         $this->remotes = $remotes;
     }
 
@@ -48,8 +48,8 @@ class GitInfo
         }
 
         return [
-            'branch'  => $this->branch,
-            'head'    => $this->head->toArray(),
+            'branch' => $this->branch,
+            'head' => $this->head->toArray(),
             'remotes' => $remotes,
         ];
     }

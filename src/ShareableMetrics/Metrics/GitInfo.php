@@ -2,9 +2,9 @@
 
 namespace Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics;
 
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metric;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\CollectableMetric;
 use Spaanproductions\ManageLaravelStats\Helpers\SourceControl\GitInfoCollector;
+use Spaanproductions\ManageLaravelStats\ShareableMetrics\CollectableMetric;
+use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metric;
 
 class GitInfo extends Metric implements CollectableMetric
 {

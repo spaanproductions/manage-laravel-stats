@@ -2,9 +2,9 @@
 
 namespace Spaanproductions\ManageLaravelStats;
 
+use Spaanproductions\ManageLaravelStats\Commands\ManageLaravelStatsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spaanproductions\ManageLaravelStats\Commands\ManageLaravelStatsCommand;
 
 class ManageLaravelStatsServiceProvider extends PackageServiceProvider
 {

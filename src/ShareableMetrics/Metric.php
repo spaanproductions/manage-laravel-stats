@@ -7,7 +7,7 @@ abstract class Metric
     public function toArray()
     {
         return [
-            $this->name() => $this->value()
+            $this->name() => $this->value(),
         ];
     }
 }
