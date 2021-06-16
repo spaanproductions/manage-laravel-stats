@@ -4,7 +4,7 @@ namespace Spaanproductions\ManageLaravelStats\ShareableMetrics;
 
 interface CollectableMetric
 {
-    public function name(): string;
+	public function name(): string;
 
-    public function value();
+	public function value();
 }

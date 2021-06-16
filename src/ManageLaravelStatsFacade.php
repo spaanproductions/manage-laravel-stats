@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Facade;
  */
 class ManageLaravelStatsFacade extends Facade
 {
-    protected static function getFacadeAccessor()
-    {
-        return 'manage-laravel-stats';
-    }
+	protected static function getFacadeAccessor()
+	{
+		return 'manage-laravel-stats';
+	}
 }

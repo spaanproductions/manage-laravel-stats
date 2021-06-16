@@ -4,10 +4,10 @@ namespace Spaanproductions\ManageLaravelStats\ShareableMetrics;
 
 abstract class Metric
 {
-    public function toArray()
-    {
-        return [
-            $this->name() => $this->value(),
-        ];
-    }
+	public function toArray()
+	{
+		return [
+			$this->name() => $this->value(),
+		];
+	}
 }

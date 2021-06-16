@@ -6,121 +6,121 @@ use Spaanproductions\ManageLaravelStats\Helpers\SystemCommandExecutor;
 
 class GitInfoCollector
 {
-    /**
-     * Git command.
-     *
-     * @var SystemCommandExecutor
-     */
-    protected $executor;
+	/**
+	 * Git command.
+	 *
+	 * @var SystemCommandExecutor
+	 */
+	protected $executor;
 
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->executor = new SystemCommandExecutor();
-    }
+	/**
+	 * Constructor.
+	 */
+	public function __construct()
+	{
+		$this->executor = new SystemCommandExecutor();
+	}
 
-    /**
-     * Collect git repository info.
-     */
-    public function collect() : GitInfo
-    {
-        $branch = $this->collectBranch();
-        $commit = $this->collectCommit();
-        $remotes = $this->collectRemotes();
+	/**
+	 * Collect git repository info.
+	 */
+	public function collect() : GitInfo
+	{
+		$branch = $this->collectBranch();
+		$commit = $this->collectCommit();
+		$remotes = $this->collectRemotes();
 
-        return new GitInfo($branch, $commit, $remotes);
-    }
+		return new GitInfo($branch, $commit, $remotes);
+	}
 
-    /**
-     * Collect branch name.
-     *
-     * @throws \RuntimeException
-     */
-    protected function collectBranch() : string
-    {
-        $branchesResult = $this->executor->execute('git branch');
+	/**
+	 * Collect branch name.
+	 *
+	 * @throws \RuntimeException
+	 */
+	protected function collectBranch() : string
+	{
+		$branchesResult = $this->executor->execute('git branch');
 
-        foreach ($branchesResult as $result) {
-            if (strpos($result, '* ') === 0) {
-                $exploded = explode('* ', $result, 2);
+		foreach ($branchesResult as $result) {
+			if (strpos($result, '* ') === 0) {
+				$exploded = explode('* ', $result, 2);
 
-                return $exploded[1];
-            }
-        }
+				return $exploded[1];
+			}
+		}
 
-        throw new \RuntimeException();
-    }
+		throw new \RuntimeException();
+	}
 
-    /**
-     * Collect commit info.
-     *
-     * @throws \RuntimeException
-     */
-    protected function collectCommit() : CommitInfo
-    {
-        $commitResult = $this->executor->execute('git log -1 --pretty=format:%H%n%aN%n%ae%n%cN%n%ce%n%s%n%at');
+	/**
+	 * Collect commit info.
+	 *
+	 * @throws \RuntimeException
+	 */
+	protected function collectCommit() : CommitInfo
+	{
+		$commitResult = $this->executor->execute('git log -1 --pretty=format:%H%n%aN%n%ae%n%cN%n%ce%n%s%n%at');
 
-        if (count($commitResult) !== 7 || array_keys($commitResult) !== range(0, 6)) {
-            throw new \RuntimeException();
-        }
+		if (count($commitResult) !== 7 || array_keys($commitResult) !== range(0, 6)) {
+			throw new \RuntimeException();
+		}
 
-        $commit = new CommitInfo();
+		$commit = new CommitInfo();
 
-        return $commit
-            ->setId(trim($commitResult[0]))
-            ->setAuthorName(trim($commitResult[1]))
-            ->setAuthorEmail(trim($commitResult[2]))
-            ->setCommitterName(trim($commitResult[3]))
-            ->setCommitterEmail(trim($commitResult[4]))
-            ->setMessage($commitResult[5])
-            ->setDate((int) $commitResult[6]);
-    }
+		return $commit
+			->setId(trim($commitResult[0]))
+			->setAuthorName(trim($commitResult[1]))
+			->setAuthorEmail(trim($commitResult[2]))
+			->setCommitterName(trim($commitResult[3]))
+			->setCommitterEmail(trim($commitResult[4]))
+			->setMessage($commitResult[5])
+			->setDate((int) $commitResult[6]);
+	}
 
-    /**
-     * Collect remotes info.
-     *
-     * @throws \RuntimeException
-     *
-     * @return list<RemoteInfo>
-     */
-    protected function collectRemotes(): array
-    {
-        $remotesResult = $this->executor->execute('git remote -v');
+	/**
+	 * Collect remotes info.
+	 *
+	 * @throws \RuntimeException
+	 *
+	 * @return list<RemoteInfo>
+	 */
+	protected function collectRemotes(): array
+	{
+		$remotesResult = $this->executor->execute('git remote -v');
 
-        if (count($remotesResult) === 0) {
-            return [];
+		if (count($remotesResult) === 0) {
+			return [];
 
-            throw new \RuntimeException();
-        }
+			throw new \RuntimeException();
+		}
 
-        // parse command result
-        $results = [];
+		// parse command result
+		$results = [];
 
-        foreach ($remotesResult as $result) {
-            if (strpos($result, ' ') !== false) {
-                [$remote] = explode(' ', $result, 2);
+		foreach ($remotesResult as $result) {
+			if (strpos($result, ' ') !== false) {
+				[$remote] = explode(' ', $result, 2);
 
-                $results[] = $remote;
-            }
-        }
+				$results[] = $remote;
+			}
+		}
 
-        // filter
-        $results = array_unique($results);
+		// filter
+		$results = array_unique($results);
 
-        // create Remote instances
-        $remotes = [];
+		// create Remote instances
+		$remotes = [];
 
-        foreach ($results as $result) {
-            if (strpos($result, "\t") !== false) {
-                [$name, $url] = explode("\t", $result, 2);
+		foreach ($results as $result) {
+			if (strpos($result, "\t") !== false) {
+				[$name, $url] = explode("\t", $result, 2);
 
-                $remote = new RemoteInfo();
-                $remotes[] = $remote->setName(trim($name))->setUrl(trim($url));
-            }
-        }
+				$remote = new RemoteInfo();
+				$remotes[] = $remote->setName(trim($name))->setUrl(trim($url));
+			}
+		}
 
-        return $remotes;
-    }
+		return $remotes;
+	}
 }
