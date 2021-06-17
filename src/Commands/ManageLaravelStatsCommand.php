@@ -30,7 +30,7 @@ class ManageLaravelStatsCommand extends Command
 			PhpVersion::class,
 			LaravelVersion::class,
 			ServerInfo::class,
-            ScheduledTasks::class,
+			ScheduledTasks::class,
 		])->map(function (string $metricClass) {
 			return new $metricClass();
 		})->map(function (Metric $metric) {
