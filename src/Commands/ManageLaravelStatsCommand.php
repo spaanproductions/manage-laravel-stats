@@ -11,6 +11,7 @@ use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\GitInfo;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\PhpVersion;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ServerInfo;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\LaravelVersion;
+use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ScheduledTasks;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\InstalledPackages;
 
 class ManageLaravelStatsCommand extends Command
@@ -29,6 +30,7 @@ class ManageLaravelStatsCommand extends Command
 			PhpVersion::class,
 			LaravelVersion::class,
 			ServerInfo::class,
+            ScheduledTasks::class,
 		])->map(function (string $metricClass) {
 			return new $metricClass();
 		})->map(function (Metric $metric) {
