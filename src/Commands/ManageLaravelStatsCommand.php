@@ -44,7 +44,7 @@ class ManageLaravelStatsCommand extends Command
 		$response = Http::withHeaders([
 			'Accept' => 'application/json',
 			'Authorization' => 'Bearer ' . config('manage-stats.token'),
-		])->post('http://managelaravel.test/api/stats', $data->toArray());
+		])->post('https://manage-laravel.spaan.dev/api/stats', $data->toArray());
 
 		if ( ! $response->ok()) {
 			$this->error('Something went wrong..');
