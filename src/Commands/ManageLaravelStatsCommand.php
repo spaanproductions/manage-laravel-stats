@@ -55,7 +55,7 @@ class ManageLaravelStatsCommand extends Command
 
 		$this->comment('All done');
 
-		dd($response->json());
+		$this->info(sprintf('The current state is %s, latest Laravel version is %s', $response->json('status'), $response->json('desired_laravel_version')));
 
 		return 0;
 	}
