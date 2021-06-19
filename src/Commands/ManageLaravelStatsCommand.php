@@ -18,7 +18,7 @@ class ManageLaravelStatsCommand extends Command
 		$data = collect([
 			Metrics\ManageLaravelTeam::class,
 			Metrics\Name::class,
-            Metrics\InstalledVersion::class,
+			Metrics\InstalledVersion::class,
 			Metrics\Url::class,
 			Metrics\GitInfo::class,
 			Metrics\InstalledPackages::class,
