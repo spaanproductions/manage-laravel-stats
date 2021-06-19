@@ -91,8 +91,6 @@ class GitInfoCollector
 
 		if (count($remotesResult) === 0) {
 			return [];
-
-			throw new \RuntimeException();
 		}
 
 		// parse command result
