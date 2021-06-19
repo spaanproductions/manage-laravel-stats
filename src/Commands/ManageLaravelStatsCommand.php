@@ -16,47 +16,57 @@ use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\InstalledPackag
 
 class ManageLaravelStatsCommand extends Command
 {
-	public $signature = 'manage-laravel-stats';
+    public $signature = 'manage-laravel-stats {--dry-run}';
 
-	public $description = 'My command';
+    public $description = 'My command';
 
-	public function handle()
-	{
-		$data = collect([
-			Name::class,
-			Url::class,
-			GitInfo::class,
-			InstalledPackages::class,
-			PhpVersion::class,
-			LaravelVersion::class,
-			ServerInfo::class,
-			ScheduledTasks::class,
-		])->map(function (string $metricClass) {
-			return new $metricClass();
-		})->map(function (Metric $metric) {
-			return $metric->toArray();
-		})->mapWithKeys(function ($item) {
-			return [
-				key($item) => $item[key($item)],
-			];
-		});
+    public function handle()
+    {
+        $data = collect([
+            Name::class,
+            Url::class,
+            GitInfo::class,
+            InstalledPackages::class,
+            PhpVersion::class,
+            LaravelVersion::class,
+            ServerInfo::class,
+            ScheduledTasks::class,
+        ])->map(function (string $metricClass) {
+            return new $metricClass();
+        })->map(function (Metric $metric) {
+            return $metric->toArray();
+        })->mapWithKeys(function ($item) {
+            return [
+                key($item) => $item[key($item)],
+            ];
+        });
 
-		$response = Http::withHeaders([
-			'Accept' => 'application/json',
-			'Authorization' => 'Bearer ' . config('manage-stats.token'),
-		])->post('https://manage-laravel.spaan.dev/api/stats', $data->toArray());
+        if ($this->option('dry-run')) {
+            dump($data->toArray());
 
-		if ( ! $response->ok()) {
-			$this->error('Something went wrong..');
-			$this->error($response->json('message'));
+            return 0;
+        }
 
-			return 1;
-		}
+        $url = app()->isLocal()
+            ? 'http://managelaravel.test/api/stats'
+            : 'https://manage-laravel.spaan.dev/api/stats';
 
-		$this->comment('All done');
+        $response = Http::withHeaders([
+            'Accept'        => 'application/json',
+            'Authorization' => 'Bearer ' . config('manage-stats.token'),
+        ])->post($url, $data->toArray());
 
-		$this->info(sprintf('The current state is %s, latest Laravel version is %s', $response->json('status'), $response->json('desired_laravel_version')));
+        if ( ! $response->ok()) {
+            $this->error('Something went wrong..');
+            $this->error($response->json('message'));
 
-		return 0;
-	}
+            return 1;
+        }
+
+        $this->comment('All done');
+
+        $this->info(sprintf('The current state is "%s", latest Laravel version is %s', $response->json('status'), $response->json('desired_laravel_version')));
+
+        return 0;
+    }
 }
