@@ -2,7 +2,7 @@
 
 namespace Spaanproductions\ManageLaravelStats\ShareableMetrics;
 
-abstract class Metric
+abstract class Metric implements CollectableMetric
 {
 	public function toArray()
 	{
