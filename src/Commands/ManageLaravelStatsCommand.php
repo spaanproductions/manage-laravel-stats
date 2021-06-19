@@ -13,6 +13,7 @@ use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ServerInfo;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\LaravelVersion;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ScheduledTasks;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\InstalledPackages;
+use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ManageLaravelTeam;
 
 class ManageLaravelStatsCommand extends Command
 {
@@ -23,6 +24,7 @@ class ManageLaravelStatsCommand extends Command
     public function handle()
     {
         $data = collect([
+            ManageLaravelTeam::class,
             Name::class,
             Url::class,
             GitInfo::class,
@@ -56,12 +58,15 @@ class ManageLaravelStatsCommand extends Command
             'Authorization' => 'Bearer ' . config('manage-stats.token'),
         ])->post($url, $data->toArray());
 
+        dump($response->body());
+
         if ( ! $response->ok()) {
             $this->error('Something went wrong..');
             $this->error($response->json('message'));
 
             return 1;
         }
+
 
         $this->comment('All done');
 
