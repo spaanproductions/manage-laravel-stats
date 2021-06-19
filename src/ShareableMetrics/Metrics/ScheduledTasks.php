@@ -2,6 +2,7 @@
 
 namespace Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Application;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
@@ -23,10 +24,14 @@ class ScheduledTasks extends Metric implements CollectableMetric
 			})
 			->map(function (Event $event) {
 				return [
-					'expression' => $event->expression,
-					'command' => $this->getCommand($event),
-					'description' => $event->description,
-					'timezone' => $event->timezone,
+					'expression'          => $event->expression,
+					'command'             => $this->getCommand($event),
+					'description'         => $event->description,
+					'timezone'            => $event->timezone,
+					'even_in_maintenance' => $event->evenInMaintenanceMode,
+					'without_overlapping' => $event->withoutOverlapping,
+					'on_one_server'       => $event->onOneServer,
+					'run_in_background'   => $event->runInBackground,
 				];
 			})->toArray();
 	}
@@ -35,7 +40,7 @@ class ScheduledTasks extends Metric implements CollectableMetric
 	{
 		return collect(explode(' ', $event->command))
 			->skipUntil(function ($item) {
-				return \Str::contains($item, Application::artisanBinary());
+				return Str::contains($item, Application::artisanBinary());
 			})->skip(1)->implode(' ');
 	}
 }

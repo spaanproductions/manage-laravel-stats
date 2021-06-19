@@ -5,15 +5,7 @@ namespace Spaanproductions\ManageLaravelStats\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metric;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\Url;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\Name;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\GitInfo;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\PhpVersion;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ServerInfo;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\LaravelVersion;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ScheduledTasks;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\InstalledPackages;
-use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics\ManageLaravelTeam;
+use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics;
 
 class ManageLaravelStatsCommand extends Command
 {
@@ -24,15 +16,16 @@ class ManageLaravelStatsCommand extends Command
 	public function handle()
 	{
 		$data = collect([
-			ManageLaravelTeam::class,
-			Name::class,
-			Url::class,
-			GitInfo::class,
-			InstalledPackages::class,
-			PhpVersion::class,
-			LaravelVersion::class,
-			ServerInfo::class,
-			ScheduledTasks::class,
+			Metrics\ManageLaravelTeam::class,
+			Metrics\Name::class,
+            Metrics\InstalledVersion::class,
+			Metrics\Url::class,
+			Metrics\GitInfo::class,
+			Metrics\InstalledPackages::class,
+			Metrics\PhpVersion::class,
+			Metrics\LaravelVersion::class,
+			Metrics\ServerInfo::class,
+			Metrics\ScheduledTasks::class,
 		])->map(function (string $metricClass) {
 			return new $metricClass();
 		})->map(function (Metric $metric) {
@@ -58,15 +51,12 @@ class ManageLaravelStatsCommand extends Command
 			'Authorization' => 'Bearer ' . config('manage-stats.token'),
 		])->post($url, $data->toArray());
 
-		dump($response->body());
-
 		if ( ! $response->ok()) {
 			$this->error('Something went wrong..');
 			$this->error($response->json('message'));
 
 			return 1;
 		}
-
 
 		$this->comment('All done');
 
