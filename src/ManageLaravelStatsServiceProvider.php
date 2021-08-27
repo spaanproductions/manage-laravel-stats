@@ -22,7 +22,7 @@ class ManageLaravelStatsServiceProvider extends PackageServiceProvider
 			// ->hasViews()
 			// ->hasMigration('create_manage-laravel-stats_table')
 			->hasCommands([
-				ManageLaravelStatsCommand::class
+				ManageLaravelStatsCommand::class,
 			]);
 	}
 

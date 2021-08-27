@@ -3,7 +3,6 @@
 namespace Spaanproductions\ManageLaravelStats\Helpers\Payloads;
 
 use ReflectionClass;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Console\Scheduling\Event;
 use Spaanproductions\ManageLaravelStats\Facades\ManageLaravel;
 use Spaanproductions\ManageLaravelStats\Helpers\Tasks\TaskIdentifier;

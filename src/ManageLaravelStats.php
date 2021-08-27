@@ -39,7 +39,7 @@ class ManageLaravelStats
 				return $command;
 			}
 
-			if (! is_callable($command)) {
+			if ( ! is_callable($command)) {
 				return md5(serialize($command));
 			}
 
