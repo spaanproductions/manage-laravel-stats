@@ -10,11 +10,12 @@ use Spaanproductions\ManageLaravelStats\ShareableMetrics\Metrics;
 class ManageLaravelStatsCommand extends Command
 {
 	public $signature = 'manage-laravel-stats {--dry-run}';
-
-	public $description = 'My command';
+	public $description = 'Send all the laravel stats to manage-laravel.';
 
 	public function handle()
 	{
+		$this->output->title('Uploading all stats to ManageLaravel.');
+
 		$data = collect([
 			Metrics\ManageLaravelTeam::class,
 			Metrics\Name::class,
@@ -39,29 +40,25 @@ class ManageLaravelStatsCommand extends Command
 		if ($this->option('dry-run')) {
 			dump($data->toArray());
 
-			return 0;
+			return self::SUCCESS;
 		}
-
-		$url = app()->isLocal()
-			? 'http://managelaravel.test/api/stats'
-			: 'https://manage-laravel.spaan.dev/api/stats';
 
 		$response = Http::withHeaders([
 			'Accept' => 'application/json',
 			'x-api-token' => config('manage-stats.token'),
-		])->post($url, $data->toArray());
+		])->post(config('manage-stats.base-url') . '/api/stats', $data->toArray());
 
 		if ( ! $response->ok()) {
 			$this->error('Something went wrong..');
 			$this->error($response->json('message'));
 
-			return 1;
+			return self::FAILURE;
 		}
 
-		$this->comment('All done');
+		$this->info(sprintf('The current state is "%s", latest Laravel version is %s.', $response->json('status'), $response->json('desired_laravel_version')));
 
-		$this->info(sprintf('The current state is "%s", latest Laravel version is %s', $response->json('status'), $response->json('desired_laravel_version')));
+		$this->output->success('All done');
 
-		return 0;
+		return self::SUCCESS;
 	}
 }
