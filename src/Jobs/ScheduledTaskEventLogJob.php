@@ -30,6 +30,10 @@ class ScheduledTaskEventLogJob implements ShouldQueue
 	 */
 	public function handle()
 	{
+		if (is_null(config('manage-stats.token'))) {
+			return;
+		}
+
 		Http::withHeaders([
 			'Accept' => 'application/json',
 			'x-api-token' => config('manage-stats.token'),
