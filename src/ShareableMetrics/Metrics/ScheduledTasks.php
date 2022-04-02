@@ -22,6 +22,9 @@ class ScheduledTasks extends Metric implements CollectableMetric
 			->filter(function (Event $event) {
 				return app()->environment($event->environments) || empty($event->environments);
 			})
+			->reject(function (Event $event) {
+				return is_null($this->getCommand($event));
+			})
 			->map(function (Event $event) {
 				return [
 					'expression' => $event->expression,
