@@ -8,6 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\ConnectionException;
 
 class ScheduledTaskEventLogJob implements ShouldQueue
 {
@@ -34,9 +35,16 @@ class ScheduledTaskEventLogJob implements ShouldQueue
 			return;
 		}
 
-		Http::withHeaders([
-			'Accept' => 'application/json',
-			'x-api-token' => config('manage-stats.token'),
-		])->post(config('manage-stats.base-url') . '/api/task-event', $this->payload);
+		try {
+			Http::timeout(5)
+				->retry(2, 10)
+				->withHeaders([
+					'Accept' => 'application/json',
+					'x-api-token' => config('manage-stats.token'),
+				])
+				->post(config('manage-stats.base-url') . '/api/task-event', $this->payload);
+		} catch (ConnectionException $exception) {
+			// Do nothing.
+		}
 	}
 }
