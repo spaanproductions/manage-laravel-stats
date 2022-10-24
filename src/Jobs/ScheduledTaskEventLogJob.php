@@ -35,6 +35,10 @@ class ScheduledTaskEventLogJob implements ShouldQueue
 			return;
 		}
 
+		if (empty(data_get($this->payload, 'task.command'))) {
+			return;
+		}
+
 		try {
 			Http::timeout(5)
 				->retry(2, 10)
